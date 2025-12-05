@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 2,
   "routes": [
     { "src": "/api/generate-bbcode", "dest": "/api/generate-bbcode.js" },
     { "src": "/api/parse-thread", "dest": "/api/parse-thread.js" },
