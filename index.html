@@ -1,55 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Tournament Tool — Smogon OP + Replays</title>
-  <link rel="stylesheet" href="/frontend/style.css" />
+  <title>BBCode Generator</title>
 </head>
 <body>
-  <main>
-    <h1>Tournament OP & Replay Generator</h1>
+  <h2>BBCode Generator</h2>
 
-    <label>Smogon thread URL
-      <input id="threadUrl" placeholder="https://www.smogon.com/forums/threads/..." />
-    </label>
+  <textarea id="input" placeholder="Paste text, replay, or teams..."></textarea>
+  <button onclick="generate()">Generate</button>
 
-    <div class="options">
-      <label><input id="optKey" type="checkbox" checked /> Generate OP sprite key</label>
-      <label><input id="optSprites" type="checkbox" checked /> Use sprite decorations</label>
-      <label><input id="optAutoPrefixes" type="checkbox" checked /> Auto generate team prefixes</label>
-    </div>
+  <pre id="output"></pre>
 
-    <div class="buttons">
-      <button id="btnParse">Parse thread</button>
-      <button id="btnGenerate" disabled>Generate BBCode</button>
-    </div>
-
-    <section id="parsedArea" class="card hidden">
-      <h2>Parsed OP</h2>
-      <pre id="rawText"></pre>
-      <h3>Parsed Result</h3>
-      <pre id="parsedJson"></pre>
-    </section>
-
-    <section id="outputArea" class="card hidden">
-      <h2>Generated BBCode</h2>
-      <textarea id="bbcode" rows="18"></textarea>
-      <div class="actions">
-        <button id="copyBtn">Copy BBCode</button>
-      </div>
-    </section>
-
-    <footer>
-      <small>Built for Smogon OP formatting. No persistent connections. Use responsibly.</small>
-    </footer>
-  </main>
-  <script src="/frontend/script.js"></script>
-  <!-- OUTPUT BOX -->
-<div id="output-container" style="margin-top: 30px; display:none;">
-  <h3 style="color:white;">Generated BBCode</h3>
-  <textarea id="output"
-    style="width:100%; height:300px; background:#111; color:#0f0; padding:10px; border-radius:6px;"></textarea>
-</div>
-
+  <script src="script.js"></script>
 </body>
 </html>
