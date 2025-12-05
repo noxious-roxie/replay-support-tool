@@ -1,19 +1,10 @@
 {
   "version": 3,
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
-  "functions": {
-    "api/*.js": {
-      "runtime": "nodejs20.x"
-    }
-  }
+    { "src": "/api/generate-bbcode", "dest": "/api/generate-bbcode.js" },
+    { "src": "/api/parse-thread", "dest": "/api/parse-thread.js" },
+    { "src": "/api/get-sprite", "dest": "/api/get-sprite.js" },
+    { "src": "/api/format-replay", "dest": "/api/format-replay.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
-
