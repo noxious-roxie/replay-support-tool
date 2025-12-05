@@ -1,0 +1,14 @@
+# Tournament Tool (Smogon OP & Replay BBCode generator)
+
+## Deploy
+1. Push this repository to GitHub.
+2. Import it into Vercel (https://vercel.com) and deploy.
+
+## Endpoints (UI uses these)
+- GET  /api/test
+- GET  /api/parse-thread?url=<SMOGON_THREAD_URL>
+- POST /api/detect-tiers  { text }
+- POST /api/generate-key  { parsed, options }
+- POST /api/generate-replays { parsed, raw, options }
+
+Use the web UI at the root (/) to paste a thread URL and generate BBCode headers & replays.
