@@ -1,3 +1,11 @@
+async function fetchThread(url) {
+  const encoded = encodeURIComponent(url);
+  const res = await fetch(`/api/fetchSmogon?url=${encoded}`);
+  const data = await res.json();
+  if (!data.html) throw new Error("No HTML returned");
+  return data.html;
+}
+
 /* Frontend script for Tournament Formatter */
 
 // --------------------
