@@ -1,26 +1,21 @@
+// api/parse-thread.js
 import axios from "axios";
 import cheerio from "cheerio";
 
 /**
- * Lightweight OP parser that extracts:
- * - raw text of first .message-body
- * - parsed.mode -> "premier" or "individual"
- * - teamHeaders array (team title strings)
- * - matches array [{ tier, p1, p2, raw }]
- *
- * Heuristic-based for common Smogon OP layouts like the examples you gave.
+ * POST { input }
+ * returns { parsed: { mode, teamHeaders, matches }, raw }
  */
 
 function parseOpText(rawText) {
-  const lines = rawText.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const teamHeaders = [];
   const matches = [];
   let mode = "individual";
 
   for (const line of lines) {
     // team header like ":tangela: Team A (4) vs (6) Team B :emoji:"
-    if (/vs/.test(line) && /[A-Za-z]/.test(line) && /\(/.test(line)) {
-      // extract left/right team names roughly
+    if (/vs/.test(line) && /\(\d+\)/.test(line)) {
       const parts = line.split(/\s+vs\s+/i);
       if (parts.length === 2) {
         const left = parts[0].replace(/[:\[\]]/g,'').replace(/\(\d+\)/,'').trim();
@@ -41,7 +36,7 @@ function parseOpText(rawText) {
       continue;
     }
 
-    // individual match lines "PlayerA vs PlayerB" (no tier)
+    // individuals: "PlayerA vs PlayerB" no tier
     const mi = line.match(/^(.+?)\s+vs\s+(.+)$/i);
     if (mi && !/RBY|SV|SS|MONOTYPE|BO\d/i.test(line)) {
       matches.push({ tier: null, p1: mi[1].trim(), p2: mi[2].trim(), raw: line });
@@ -61,20 +56,22 @@ function parseOpText(rawText) {
 
 export default async function handler(req, res) {
   try {
-    const url = req.query.url || req.body?.url;
-    if (!url) return res.status(400).json({ error: "Missing ?url=" });
+    const input = req.body?.input;
+    if (!input) return res.status(400).json({ error: "Missing input" });
 
-    const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
-    const $ = cheerio.load(data);
+    let raw = input;
+    // if URL, fetch thread and extract first .message-body
+    if (/^https?:\/\//i.test(input)) {
+      const { data } = await axios.get(input, { headers: { "User-Agent": "Mozilla/5.0" } });
+      const $ = cheerio.load(data);
+      const opElem = $(".message-body").first();
+      raw = opElem && opElem.length ? opElem.text().replace(/\r\n/g, "\n") : $("body").text();
+    }
 
-    // try two selectors: .message-body or article .message-body
-    let opElem = $('.message-body').first();
-    if (!opElem || !opElem.length) opElem = $('article.message-body').first();
-
-    const raw = opElem && opElem.length ? opElem.text().replace(/\r\n/g,'\n') : $('body').text();
-    const parsed = parseOpText(raw || '');
+    const parsed = parseOpText(raw || "");
     return res.status(200).json({ raw, parsed });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 }
+
