@@ -1,16 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-  <title>BBCode Generator</title>
+  <meta charset="utf-8" />
+  <title>Smogon Tournament Formatter</title>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <h2>BBCode Generator</h2>
+  <main class="container">
+    <h1>Tournament OP & Replay Generator</h1>
 
-  <textarea id="input" placeholder="Paste text, replay, or teams..."></textarea>
-  <button onclick="generate()">Generate</button>
+    <label class="full">Smogon thread URL or paste OP/raw text
+      <textarea id="threadInput" placeholder="Paste Smogon thread URL or full OP text here"></textarea>
+    </label>
 
-  <pre id="output"></pre>
+    <div class="controls">
+      <label><input id="optSprites" type="checkbox" checked /> Use sprite decorations</label>
+      <label><input id="optAutoPrefixes" type="checkbox" checked /> Auto generate team prefixes</label>
+      <label><input id="optKey" type="checkbox" checked /> Generate OP key (prefix list)</label>
+    </div>
 
-  <script src="script.js"></script>
+    <div class="buttons">
+      <button id="btnParse">Parse thread</button>
+      <button id="btnGenerateReplays" disabled>Generate Replay Formatting</button>
+      <button id="btnGenerateKey" disabled>Generate KEY Section</button>
+    </div>
+
+    <section id="parsedArea" class="card hidden">
+      <h2>Parsed (preview)</h2>
+      <pre id="parsedJson"></pre>
+    </section>
+
+    <section id="outputArea" class="card hidden">
+      <h2>Generated BBCode (replays)</h2>
+      <textarea id="bbOutput" rows="16"></textarea>
+      <div class="actions">
+        <button id="copyReplays">Copy Replays BBCode</button>
+      </div>
+    </section>
+
+    <section id="keyArea" class="card hidden">
+      <h2>Generated KEY (OP)</h2>
+      <textarea id="keyOutput" rows="6"></textarea>
+      <div class="actions">
+        <button id="copyKey">Copy KEY</button>
+      </div>
+    </section>
+
+    <footer>
+      <small>Built for Smogon OP formatting — no persistent connections.</small>
+    </footer>
+  </main>
+
+  <script src="/script.js"></script>
 </body>
 </html>
