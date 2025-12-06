@@ -5,6 +5,25 @@ async function fetchThread(url) {
   if (!data.html) throw new Error("No HTML returned");
   return data.html;
 }
+document.getElementById("loadBtn").onclick = async () => {
+  const url = document.getElementById("threadURL").value.trim();
+  if (!url) {
+    alert("Please enter a Smogon thread URL first.");
+    return;
+  }
+
+  try {
+    const html = await fetchThread(url);  // This calls your backend
+    console.log("Fetched thread HTML:", html.substring(0, 200));
+
+    // Use your parsing logic (temporarily just show raw HTML)
+    document.getElementById("preview").value = html;
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to fetch URL. Check console for details.");
+  }
+};
 
 /* Frontend script for Tournament Formatter */
 
