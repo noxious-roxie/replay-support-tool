@@ -1,10 +1,10 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/api/generate-bbcode", "dest": "/api/generate-bbcode.js" },
     { "src": "/api/parse-thread", "dest": "/api/parse-thread.js" },
-    { "src": "/api/get-sprite", "dest": "/api/get-sprite.js" },
-    { "src": "/api/format-replay", "dest": "/api/format-replay.js" },
+    { "src": "/api/detect-tiers", "dest": "/api/detect-tiers.js" },
+    { "src": "/api/generate-key", "dest": "/api/generate-key.js" },
+    { "src": "/api/generate-replays", "dest": "/api/generate-replays.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
