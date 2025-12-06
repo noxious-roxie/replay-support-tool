@@ -1,40 +1,30 @@
-import { buildPrefixMap } from "./utils.js";
+// api/generate-key.js
+import { buildPrefixMap, initialsFromTeamName } from "./utils.js";
 
-/**
- * POST JSON:
- * {
- *  parsed: { teamHeaders: [...] },
- *  options: { useSprites: true, prefixOverrides: { "Team Name": "OVR" } }
- * }
- */
-const SAMPLE_SPRITES = [":bulbasaur:", ":charmander:", ":squirtle:", ":pikachu:", ":garchomp:"];
+const SAMPLE_SPRITES = [":bulbasaur:", ":charizard:", ":pikachu:", ":garchomp:", ":tinglu:", ":chienpao:"];
 
-function pickSprite(i){
-  return SAMPLE_SPRITES[i % SAMPLE_SPRITES.length];
-}
+function pickSprite(i) { return SAMPLE_SPRITES[i % SAMPLE_SPRITES.length]; }
 
 export default function handler(req, res) {
   try {
     const parsed = req.body?.parsed;
-    if (!parsed) return res.status(400).json({ error: "Provide parsed in body" });
-    const teams = parsed.teamHeaders || [];
-    const opts = req.body.options || {};
+    if (!parsed) return res.status(400).json({ error: "Provide parsed object from /api/parse-thread" });
+    const opts = req.body?.options || {};
     const overrides = opts.prefixOverrides || {};
+    const teams = parsed.teamHeaders || [];
     const prefixMap = buildPrefixMap(teams, overrides);
 
-    // create key lines: [sprite] Team Name [PREFIX]
+    // Option 2 format: [PREFIX] sprite
     const lines = [];
-    let i=0;
-    for (const t of teams) {
-      const prefix = prefixMap[t] || initialsFromTeamName(t);
-      const sprite = opts.useSprites ? pickSprite(i) + " " : "";
-      lines.push(`${sprite}[B]${t}[/B] [${prefix}]`);
-      i++;
-    }
+    teams.forEach((t, i) => {
+      const pref = prefixMap[t] || initialsFromTeamName(t);
+      const sprite = opts.useSprites ? (pickSprite(i) + " ") : "";
+      // Classic: prefix first as requested
+      lines.push(`[B][${pref}][/B] ${sprite}[B]${t}[/B]`);
+    });
 
-    // Also return the mapping object
-    res.status(200).json({ keyBBCode: lines.join("\n"), prefixes: prefixMap });
+    return res.status(200).json({ keyBBCode: lines.join("\n"), prefixes: prefixMap });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 }
